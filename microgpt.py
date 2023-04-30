@@ -190,7 +190,7 @@ if __name__ == "__main__":
                     print("Prompting the gpt-4 model failed. Falling back to gpt-3.5-turbo")
                     agent = ThinkGPT(model_name='gpt-3.5-turbo', verbose=False)
                     continue
-                print("Error accessing the OpenAI API: " + str(e))
+                print(f"Error accessing the OpenAI API: {str(e)}")
                 sys.exit(0)
 
         if DEBUG:
@@ -217,7 +217,7 @@ if __name__ == "__main__":
 
             # Remove unwanted code formatting backticks
             arg = arg.replace("```", "")
-            
+
             mem = f"\nPrevious command #{command_id}:\nThought: {thought}\nCmd: {command}"\
                 f"\nArg:\n{arg}\nResult:\n"
 
@@ -260,13 +260,13 @@ if __name__ == "__main__":
                     critic_response = agent.predict(prompt)
 
                 except openai.error.InvalidRequestError as e:
-                    print("Error accessing the OpenAI API: " + str(e))
+                    print(f"Error accessing the OpenAI API: {str(e)}")
                     sys.exit(0)
 
             if "CRITICIZE" in critic_response:
                 response = "\n".join(critic_response.split("\n")[1:])
 
-                if len(response) > 0:
+                if response != "":
                     print(colored(f"Critic: {response}", "magenta"))
                     agent.memorize(f"{mem}Revise your command: {response}.")
                     num_critiques += 1
